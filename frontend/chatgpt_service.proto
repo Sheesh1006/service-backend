@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package chatgpt_service;
+
+service ChatGPTService {
+  rpc GetRawNotes (GetRawNotesRequest) returns (GetRawNotesResponse) {}
+}
+
+message GetRawNotesRequest {
+  int32 video = 1;          // 1 - есть видео, 0 - нет
+  int32 presentation = 2;   // 1 - есть презентация, 0 - нет
+}
+
+message GetRawNotesResponse {
+  string result_id = 1;     // ID результата для скачивания
+  string status = 2;        // "success" или "error"
+  string message = 3;       // Описание ошибки (если есть)
+}
