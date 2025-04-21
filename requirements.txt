@@ -1,8 +1,8 @@
 #backend_service @ git+https://github.com/Sheesh1006/proto.git@6926fb502090a5fc76224358c6069f72519307be#subdirectory=gen/backend_service
 chardet==5.2.0
 #chatgpt_service @ git+https://github.com/Sheesh1006/proto.git@d39873b57109a2940c5458ab0b528e72d92017cd#subdirectory=gen/chatgpt_service
-git+https://${GITHUB_TOKEN}@github.com/Sheesh1006/proto.git@main#subdirectory=gen/backend_service
-git+https://${GITHUB_TOKEN}@github.com/Sheesh1006/proto.git@main#subdirectory=gen/chatgpt_service
+git+https://@github.com/Sheesh1006/proto.git@main#subdirectory=gen/backend_service
+git+https://@github.com/Sheesh1006/proto.git@main#subdirectory=gen/chatgpt_service
 grpcio==1.71.0
 grpcio-tools==1.71.0
 munch==4.0.0
