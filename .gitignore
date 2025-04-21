@@ -2,3 +2,5 @@ venv
 github_token.txt
 *.yml
 __pycache__
+test*
+*.mp4
