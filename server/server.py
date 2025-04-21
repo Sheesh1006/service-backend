@@ -12,7 +12,10 @@ from chatgpt_service.chatgpt_service_pb2 import (
 from munch import munchify
 from yaml import safe_load
 import grpc
+from io import BytesIO
+from PIL import Image
 from .notes import Notes2pdf
+
 
 
 def createClient() -> ChatGPTServiceStub:
@@ -62,7 +65,6 @@ class BackendServiceServicer(backend_service_pb2_grpc.BackendServiceServicer):
         raw_notes_resp: GetRawNotesResponse = self.stub.GetRawNotes(raw_req_stream())
         for resp in raw_notes_resp:
             chunk = resp.raw_notes
-            # if the ChatGPTService accidentally sent bytes, force it to str
             if isinstance(chunk, (bytes, bytearray)):
                 chunk = chunk.decode("utf-8")
             raw_notes.extend(chunk.split("###"))
@@ -75,9 +77,19 @@ class BackendServiceServicer(backend_service_pb2_grpc.BackendServiceServicer):
                 ts = ts.decode("utf-8")
             timestamps.extend(ts.split("###"))
         
-        converter = Notes2pdf(timestamps, raw_notes, None)
+        byte_frames = []
+        pil_frames  = []
+        keyframes_resp: GetKeyFramesResponse = self.stub.GetKeyFrames(GetKeyFramesRequest())
+        for resp in keyframes_resp:
+            for img_bytes in resp.keyframes:
+                byte_frames.append(img_bytes)
+                buf = BytesIO(img_bytes)
+                img = Image.open(buf)
+                pil_frames.append(img)
+        
+        converter = Notes2pdf(timestamps, raw_notes, pil_frames)
         pdf_bytes = converter.export_pdf()
 
-        CHUNK_OUT = 4 * 1024 * 1024  # 4 MB
+        CHUNK_OUT = 2 * 1024 * 1024  # 2 MB
         for i in range(0, len(pdf_bytes), CHUNK_OUT):
             yield GetNotesResponse(notes=pdf_bytes[i : i + CHUNK_OUT])

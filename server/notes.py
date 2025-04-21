@@ -2,6 +2,7 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.lib.utils import ImageReader
 from io import BytesIO
 
 pdfmetrics.registerFont(TTFont('DejaVuSans', 'DejaVuSans.ttf'))
@@ -104,7 +105,8 @@ class Notes2pdf(object):
                     img_height = 300
                     if y < img_height + 50:
                         c.showPage(); y = height - 50; c.setFont("DejaVuSans", 12)
-                    c.drawImage(img, x, y - img_height, width=img_width, height=img_height, preserveAspectRatio=True, mask='auto')
+                    img_reader = ImageReader(img)
+                    c.drawImage(img_reader, x, y - img_height, width=img_width, height=img_height, preserveAspectRatio=True, mask='auto')
                     y -= img_height + 20
                 except:
                     continue
